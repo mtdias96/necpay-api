@@ -1,0 +1,19 @@
+# Node.js
+node_modules/
+
+# Serverless build artifacts
+.serverless/
+
+# IDEs
+.vscode/
+
+# TypeScript build output
+dist/
+build/
+
+# Env files
+.env
+.env.*.local
+
+#Anotações
+.md
