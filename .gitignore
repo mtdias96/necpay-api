@@ -16,4 +16,4 @@ build/
 .env.*.local
 
 #Anotações
-.md
+features.md
