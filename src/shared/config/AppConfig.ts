@@ -3,6 +3,7 @@ import { env } from './env';
 
 @Injectable()
 export class AppConfig {
+  readonly database: AppConfig.Database;
   readonly auth: AppConfig.Auth;
 
   constructor() {
@@ -12,10 +13,21 @@ export class AppConfig {
         clientSecret: env.COGNITO_CLIENT_SECRET,
       },
     };
+    this.database = {
+      neon: {
+        baseURL: env.DATABASE_URL,
+      },
+    };
   }
 }
 
 export namespace AppConfig {
+  export type Database = {
+    neon: {
+      baseURL: string
+    }
+  }
+
   export type Auth = {
     cognito: {
       clientId: string
