@@ -2,7 +2,10 @@ import z from 'zod';
 
 export const signUpSchema = z.object({
   account: z.object({
-    email: z.string().min(1, 'E-mail is required.').email('Invalid email'),
+    name: z.string().min(2, 'O nome deve ter no mínimo 2 caracteres'),
+    email: z.string()
+      .min(1, 'O e-mail é obrigatório.')
+      .email('E-mail inválido'),
     password: z.string()
       .min(8, 'A senha deve ter no mínimo 8 caracteres')
       .regex(/[a-z]/, 'A senha deve conter pelo menos uma letra minúscula')
@@ -12,4 +15,4 @@ export const signUpSchema = z.object({
   }),
 });
 
-export type SignUpBody = z.infer<typeof signUpSchema>
+export type SignUpBody = z.infer<typeof signUpSchema>;
