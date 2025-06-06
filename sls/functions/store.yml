@@ -4,3 +4,5 @@ registerStore:
     - httpApi:
         path: /store/register-store
         method: POST
+        authorizer:
+          name: CognitoAuthorizer

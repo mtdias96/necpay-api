@@ -8,6 +8,14 @@ provider:
   memorySize: 128
   stage: ${opt:stage, 'dev'}
   environment: ${file(./sls/config/env.yml)}
+  httpApi:
+    authorizers:
+      CognitoAuthorizer:
+        type: jwt
+        identitySource: $request.header.Authorization
+        issuerUrl: !GetAtt UserPool.ProviderURL
+        audience:
+          - !Ref UserPoolClient
 
 package:
   individually: true
