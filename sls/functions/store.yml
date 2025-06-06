@@ -1,0 +1,6 @@
+registerStore:
+  handler: src/main/functions/store/registerStore.handler
+  events:
+    - httpApi:
+        path: /store/register-store
+        method: POST
