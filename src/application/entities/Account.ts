@@ -1,7 +1,6 @@
 export class Account {
   readonly email: string;
   readonly name: string;
-
   externalId: string;
 
   constructor(attrs: Account.Attributes) {
@@ -10,11 +9,11 @@ export class Account {
     this.externalId = attrs.externalId;
   }
 }
-
 export namespace Account {
   export type Attributes = {
     email: string;
-    name: string
-    externalId: string
-  }
+    name: string;
+    externalId: string;
+  };
+
 }

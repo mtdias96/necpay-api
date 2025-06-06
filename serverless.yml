@@ -22,5 +22,6 @@ build:
 
 functions:
   - ${file(./sls/functions/auth.yml)}
+  - ${file(./sls/functions/store.yml)}
 resources:
   - ${file(./sls/resources/UserPool.yml)}
