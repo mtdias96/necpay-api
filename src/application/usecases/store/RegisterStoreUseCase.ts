@@ -9,10 +9,11 @@ export class RegisterStoreUseCase {
   async execute({
     accountId,
     email,
-    nameStore,
+    name,
     phone,
   }: RegisterStoreUseCase.Input) {
-    const storeInfo = new Store({ email, accountId, nameStore, phone });
+
+    const storeInfo = new Store({ email, accountId, name, phone });
     await this.storeRepo.create(storeInfo);
   }
 }
@@ -20,7 +21,7 @@ export class RegisterStoreUseCase {
 export namespace RegisterStoreUseCase {
   export type Input = {
     email: string;
-    nameStore: string;
+    name: string;
     phone: string;
     accountId: string;
   }
