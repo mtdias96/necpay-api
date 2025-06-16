@@ -10,6 +10,7 @@ export class AppConfig {
     this.auth = {
       cognito: {
         clientId: env.COGNITO_CLIENT_ID,
+        poolId: env.COGNITO_POOL_ID,
         clientSecret: env.COGNITO_CLIENT_SECRET,
       },
     };
@@ -30,6 +31,7 @@ export namespace AppConfig {
 
   export type Auth = {
     cognito: {
+      poolId: string
       clientId: string
       clientSecret: string
     }

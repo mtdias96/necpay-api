@@ -1,4 +1,5 @@
 import { Account } from '@application/entities/Account';
+import { Store } from '@application/entities/Store';
 import { AccountRepository } from '@infra/database/drizzle/repositories/auth/AccountRepository';
 import { Injectable } from '@kernel/decorators/Injectable';
 import { AuthGateway } from 'src/infra/gateways/AuthGateway';
@@ -7,22 +8,27 @@ import { AuthGateway } from 'src/infra/gateways/AuthGateway';
 export class SignUpUseCase {
   constructor(
     private readonly authGateway: AuthGateway,
-    private readonly authRepo: AccountRepository,
+    private readonly authRepository: AccountRepository,
 
   ) { }
 
-  async execute({
-    name,
-    email,
-    password,
-  }: SignUpUseCase.Input): Promise<SignUpUseCase.Output> {
+  async execute({ account, store }: SignUpUseCase.Input): Promise<SignUpUseCase.Output> {
+    const { email, name, password } = account;
+    const { emailStore, nameStore, phoneStore } = store;
+
+    const accounts = new Account({ email, name });
+    const storeCreate = new Store({ emailStore, nameStore, phoneStore, accountId: accounts.id });
+
     const { externalId } = await this.authGateway.signUp({
       email,
       password,
+      storeId: storeCreate.id,
     });
 
-    const account = new Account({ email, name, externalId });
-    await this.authRepo.create(account);
+    accounts.externalId = externalId;
+
+    await this.authRepository.create(accounts);
+    await this.authRepository.createStore(storeCreate);
 
     const {
       accessToken,
@@ -38,9 +44,17 @@ export class SignUpUseCase {
 
 export namespace SignUpUseCase {
   export type Input = {
-    name: string;
-    email: string;
-    password: string;
+    account: {
+      name: string;
+      email: string;
+      password: string;
+    }
+
+    store: {
+      nameStore: string;
+      emailStore?: string;
+      phoneStore?: string;
+    }
   }
 
   export type Output = {

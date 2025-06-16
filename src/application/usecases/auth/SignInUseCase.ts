@@ -5,13 +5,13 @@ import { AuthGateway } from 'src/infra/gateways/AuthGateway';
 export class SignInUseCase {
   constructor(
     private readonly authGateway: AuthGateway,
+
   ) { }
 
   async execute({
     email,
     password,
   }: SignInUseCase.Input): Promise<SignInUseCase.Output> {
-
     const {
       accessToken,
       refreshToken,
