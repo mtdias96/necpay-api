@@ -1,4 +1,5 @@
-import { InitiateAuthCommand, SignUpCommand } from '@aws-sdk/client-cognito-identity-provider';
+import { InvalidRefreshToken } from '@application/errors/application/InvalidRefreshToken';
+import { ConfirmForgotPasswordCommand, ForgotPasswordCommand, GetTokensFromRefreshTokenCommand, InitiateAuthCommand, SignUpCommand } from '@aws-sdk/client-cognito-identity-provider';
 import { cognitoClient } from '@infra/clients/cognitoClient';
 import { Injectable } from '@kernel/decorators/Injectable';
 import { AppConfig } from '@shared/config/AppConfig';
@@ -66,15 +67,59 @@ export class AuthGateway {
     };
   }
 
+  async refreshToken({ refreshToken }: AuthGateway.RefreshTokenParams): Promise<AuthGateway.RefreshTokenResult> {
+    try {
+      const command = new GetTokensFromRefreshTokenCommand({
+        ClientId: this.appConfig.auth.cognito.clientId,
+        RefreshToken: refreshToken,
+        ClientSecret: this.appConfig.auth.cognito.clientSecret,
+      });
+
+      const { AuthenticationResult } = await cognitoClient.send(command);
+
+      if (!AuthenticationResult?.AccessToken || !AuthenticationResult.RefreshToken) {
+        throw new Error('Cannot refresh token');
+      }
+
+      return {
+        accessToken: AuthenticationResult.AccessToken,
+        refreshToken: AuthenticationResult.RefreshToken,
+      };
+
+    } catch {
+      throw new InvalidRefreshToken();
+    }
+  }
+
+  async forgotPassword({ email }: AuthGateway.ForgotPasswordParams): Promise<void> {
+    const command = new ForgotPasswordCommand({
+      ClientId: this.appConfig.auth.cognito.clientId,
+      Username: email,
+      SecretHash: this.getSecretHash(email),
+    });
+
+    await cognitoClient.send(command);
+  }
+
+  async confirmForgotPassword({ code, email, password }: AuthGateway.ConfirmForgotPasswordParams): Promise<void> {
+    const command = new ConfirmForgotPasswordCommand({
+      ClientId: this.appConfig.auth.cognito.clientId,
+      ConfirmationCode: code,
+      Username: email,
+      Password: password,
+      SecretHash: this.getSecretHash(email),
+    });
+
+    await cognitoClient.send(command);
+  }
+
   private getSecretHash(email: string): string {
     const { clientId, clientSecret } = this.appConfig.auth.cognito;
     return createHmac('SHA256', clientSecret)
       .update(`${email}${clientId}`)
       .digest('base64');
   }
-
 }
-
 export namespace AuthGateway {
   export type SignUpParams = {
     email: string;
@@ -94,6 +139,25 @@ export namespace AuthGateway {
   export type SignInResult = {
     accessToken: string;
     refreshToken: string;
+  }
+
+  export type RefreshTokenParams = {
+    refreshToken: string;
+  }
+
+  export type RefreshTokenResult = {
+    accessToken: string;
+    refreshToken: string;
+  }
+
+  export type ForgotPasswordParams = {
+    email: string;
+  }
+
+  export type ConfirmForgotPasswordParams = {
+    code: string;
+    email: string;
+    password: string
   }
 
 }
