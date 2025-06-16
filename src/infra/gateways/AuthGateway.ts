@@ -40,12 +40,19 @@ export class AuthGateway {
   async signUp({
     email,
     password,
+    storeId,
   }: AuthGateway.SignUpParams): Promise<AuthGateway.SignUpResult> {
     const command = new SignUpCommand({
       ClientId: this.appConfig.auth.cognito.clientId,
       Username: email,
       Password: password,
       SecretHash: this.getSecretHash(email),
+      UserAttributes: [
+        {
+          Name: 'custom:storeId',
+          Value: storeId,
+        },
+      ],
     });
 
     const { UserSub: externalId } = await cognitoClient.send(command);
@@ -65,12 +72,14 @@ export class AuthGateway {
       .update(`${email}${clientId}`)
       .digest('base64');
   }
+
 }
 
 export namespace AuthGateway {
   export type SignUpParams = {
     email: string;
     password: string;
+    storeId: string
   }
 
   export type SignUpResult = {
@@ -86,4 +95,5 @@ export namespace AuthGateway {
     accessToken: string;
     refreshToken: string;
   }
+
 }

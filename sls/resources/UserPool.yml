@@ -3,7 +3,7 @@ Resources:
     Type: AWS::Cognito::UserPool
     Properties:
       UserPoolName: ${self:custom.cognito.PoolName}
-      DeletionProtection: ACTIVE
+      DeletionProtection: INACTIVE
       MfaConfiguration: OFF
       AutoVerifiedAttributes:
         - email
@@ -15,6 +15,11 @@ Resources:
         RecoveryMechanisms:
           - Name: verified_email
             Priority: 1
+      Schema:
+        - Name: storeId
+          Required: false
+          Mutable: true
+          AttributeDataType: String
       Policies:
         PasswordPolicy:
           MinimumLength: 8
@@ -22,6 +27,19 @@ Resources:
           RequireNumbers: true
           RequireSymbols: true
           RequireUppercase: true
+      LambdaConfig:
+        PreTokenGenerationConfig:
+          LambdaArn: !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${self:service}-${self:provider.stage}-preTokenGenerationTrigger'
+          LambdaVersion: V2_0
+
+  PreTokenGenerationLambdaPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn: PreTokenGenerationTriggerLambdaFunction
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${self:service}-${self:provider.stage}-preTokenGenerationTrigger'
+      Principal: cognito-idp.amazonaws.com
+      SourceArn: !GetAtt UserPool.Arn
 
   UserPoolClient:
     Type: AWS::Cognito::UserPoolClient
