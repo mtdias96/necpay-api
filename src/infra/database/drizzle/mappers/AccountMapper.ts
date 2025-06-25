@@ -1,8 +1,8 @@
 import { Account } from '@application/entities/Account';
-import { accounts } from '@infra/database/drizzle/schema/auth/account';
+import { accountsTable } from '../schema/accounts';
 
 export class AccountMapper {
-  static toEntity(raw: typeof accounts.$inferSelect): Account {
+  static toEntity(raw: typeof accountsTable.$inferSelect): Account {
     return new Account({
       id: raw.id,
       name: raw.name,
@@ -12,7 +12,7 @@ export class AccountMapper {
     });
   }
 
-  static toPersistence(account: Account): typeof accounts.$inferInsert {
+  static toPersistence(account: Account): typeof accountsTable.$inferInsert {
     return {
       id: account.id,
       name: account.name,

@@ -1,8 +1,8 @@
 import { Store } from '@application/entities/Store';
-import { stores } from '@infra/database/drizzle/schema/store/stores';
+import { storesTable } from '../schema/stores';
 
 export class StoreMapper {
-  static toEntity(raw: typeof stores.$inferSelect): Store {
+  static toEntity(raw: typeof storesTable.$inferSelect): Store {
     return new Store({
       id: raw.id,
       nameStore: raw.name,
@@ -13,7 +13,7 @@ export class StoreMapper {
     });
   }
 
-  static toPersistence(store: Store): typeof stores.$inferInsert {
+  static toPersistence(store: Store): typeof storesTable.$inferInsert {
     return {
       id: store.id,
       name: store.nameStore,

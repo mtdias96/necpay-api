@@ -1,6 +1,7 @@
 import { Account } from '@application/entities/Account';
 import { Store } from '@application/entities/Store';
-import { AccountRepository } from '@infra/database/drizzle/repositories/auth/AccountRepository';
+import { SignUpUnitOfWork } from '@infra/database/drizzle/uow/SignUpUnitOfWork';
+
 import { Injectable } from '@kernel/decorators/Injectable';
 import { AuthGateway } from 'src/infra/gateways/AuthGateway';
 
@@ -8,7 +9,7 @@ import { AuthGateway } from 'src/infra/gateways/AuthGateway';
 export class SignUpUseCase {
   constructor(
     private readonly authGateway: AuthGateway,
-    private readonly authRepository: AccountRepository,
+    private readonly signnUpUnitOfWork: SignUpUnitOfWork,
 
   ) { }
 
@@ -27,8 +28,10 @@ export class SignUpUseCase {
 
     accounts.externalId = externalId;
 
-    await this.authRepository.create(accounts);
-    await this.authRepository.createStore(storeCreate);
+    await this.signnUpUnitOfWork.run({
+      account: accounts,
+      store: storeCreate,
+    });
 
     const {
       accessToken,
