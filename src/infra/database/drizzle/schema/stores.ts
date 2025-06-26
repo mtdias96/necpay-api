@@ -8,5 +8,6 @@ export const storesTable = pgTable('stores', {
   email: varchar('email'),
   phone: varchar('phone'),
   accountId: uuid('account_id').references(() => accountsTable.id),
-  createdAt: timestamp('created_at').defaultNow(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+
 });
