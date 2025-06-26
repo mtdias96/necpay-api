@@ -1,0 +1,1 @@
+ALTER TABLE "stores" ALTER COLUMN "created_at" SET NOT NULL;
