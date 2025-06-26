@@ -10,60 +10,152 @@ authorName: 'Serverless, Inc.'
 authorAvatar: 'https://avatars1.githubusercontent.com/u/13742415?s=200&v=4'
 -->
 
-# Serverless Framework Node HTTP API on AWS
+# AdegaTech API
 
-This template demonstrates how to make a simple HTTP API with Node.js running on AWS Lambda and API Gateway using the Serverless Framework.
+API para gestão de adegas, focada em autenticação, onboarding e estruturação inicial para controle de produtos, vendas e relatórios. Desenvolvida em Node.js, Serverless e AWS, com autenticação via Cognito e banco de dados PostgreSQL.
 
-This template does not include any kind of persistence (database). For more advanced examples, check out the [serverless/examples repository](https://github.com/serverless/examples/) which includes Typescript, Mongo, DynamoDB and other examples.
+---
 
-## Usage
+## 🚀 Descrição
+A AdegaTech API é o backend de um sistema para gestão de adegas, permitindo cadastro de proprietários, onboarding de estabelecimentos, autenticação segura, e servindo de base para módulos de produtos, vendas, relatórios e financeiro.
 
-### Deployment
+---
 
-In order to deploy the example, you need to run the following command:
+## 🛠️ Tecnologias Utilizadas
+- Node.js 22
+- TypeScript
+- Serverless Framework
+- AWS Lambda & API Gateway
+- AWS Cognito (autenticação)
+- PostgreSQL (Neon)
+- Drizzle ORM
+- React Email (templates de email)
+- Zod (validação)
 
-```
+---
+
+## 📦 Instalação e Uso Local
+1. **Clone o repositório:**
+   ```bash
+   git clone <url-do-repo>
+   cd adegaTech-api
+   ```
+2. **Instale as dependências:**
+   ```bash
+   pnpm install
+   ```
+3. **Configure as variáveis de ambiente:**
+   Crie um arquivo `.env` com as variáveis abaixo (veja seção de variáveis).
+4. **Rode localmente:**
+   ```bash
+   serverless dev
+   ```
+
+---
+
+## ☁️ Deploy
+O deploy é feito via Serverless Framework para AWS Lambda:
+```bash
 serverless deploy
 ```
 
-After running deploy, you should see output similar to:
+---
 
+## ⚙️ Variáveis de Ambiente
+Configure as seguintes variáveis no `.env`:
+- `DATABASE_URL` – URL de conexão do PostgreSQL
+- `COGNITO_CLIENT_ID` – Client ID do Cognito
+- `COGNITO_POOL_ID` – Pool ID do Cognito
+- `COGNITO_CLIENT_SECRET` – Client Secret do Cognito
+
+---
+
+## 📁 Estrutura de Pastas
 ```
-Deploying "serverless-http-api" to stage "dev" (us-east-1)
-
-✔ Service deployed to stack serverless-http-api-dev (91s)
-
-endpoint: GET - https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/
-functions:
-  hello: serverless-http-api-dev-hello (1.6 kB)
-```
-
-_Note_: In current form, after deployment, your API is public and can be invoked by anyone. For production deployments, you might want to configure an authorizer. For details on how to do that, refer to [HTTP API (API Gateway V2) event docs](https://www.serverless.com/framework/docs/providers/aws/events/http-api).
-
-### Invocation
-
-After successful deployment, you can call the created application via HTTP:
-
-```
-curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/
-```
-
-Which should result in response similar to:
-
-```json
-{ "message": "Go Serverless v4! Your function executed successfully!" }
+src/
+  application/   # Casos de uso, controllers, entidades, erros
+  infra/         # Banco, clients, emails, gateways
+  main/          # Entrypoints (handlers Lambda)
+  shared/        # Configurações, tipos, sagas
+  kernel/        # Injeção de dependência, decorators
+sls/             # Configurações serverless
 ```
 
-### Local development
+---
 
-The easiest way to develop and test your function is to use the `dev` command:
+## 🔑 Endpoints de Autenticação
+- **POST /sign-up** – Cadastro de proprietário e adega
+- **POST /sign-in** – Login
+- **POST /forgot-password** – Solicitar recuperação de senha
+- **POST /confirm-forgot-password** – Confirmar recuperação de senha
+- **POST /refresh-token** – Renovar token de acesso
 
-```
-serverless dev
-```
+**Todos os endpoints aceitam e retornam JSON.**
 
-This will start a local emulator of AWS Lambda and tunnel your requests to and from AWS Lambda, allowing you to interact with your function as if it were running in the cloud.
+---
 
-Now you can invoke the function as before, but this time the function will be executed locally. Now you can develop your function locally, invoke it, and see the results immediately without having to re-deploy.
+## 🗄️ Entidades Principais
+- **Account**: id, name, email, externalId, createdAt, updatedAt
+- **Store**: id, name, email, phone, accountId, createdAt
 
-When you are done developing, don't forget to run `serverless deploy` to deploy the function to the cloud.
+---
+
+## ✉️ Funcionalidade de Email
+- Envio de email de recuperação de senha com template customizado e código de verificação.
+
+---
+
+## 🗺️ Roadmap do Projeto
+
+### 1. 🚀 Cadastro e Onboarding Inicial
+- [x] Cadastro de proprietário com e-mail e senha
+- [x] Onboarding solicitando nome da adega
+- [x] Criação automática do registro da adega
+
+### 2. 📦 Cadastro de Produtos e Categorias
+- [ ] Cadastro de categorias (nome, ícone/imagem)
+- [ ] Cadastro de produtos (nome, estoque, preço de venda, preço de custo, alerta de estoque mínimo, categoria, imagem)
+- [ ] CRUD completo de categorias
+- [ ] CRUD completo de produtos
+
+### 3. 🛒 Fluxo de Venda
+- [ ] Login de funcionário (modo venda)
+- [ ] Tela de vendas adaptada para balcão
+- [ ] Busca rápida de produtos
+- [ ] Adição ao carrinho
+- [ ] Seleção de forma de pagamento (Pix, dinheiro, cartão, NFC)
+- [ ] Confirmação/finalização da venda
+- [ ] Baixa automática de estoque
+- [ ] Registro da venda (data/hora, valor, produtos, funcionário, método de pagamento)
+- [ ] Atualização dos dados financeiros
+
+### 4. 📊 Painel do Dono
+- [ ] Relatórios de vendas (período, produtos mais vendidos, horários de pico)
+- [ ] Controle de estoque (atualização automática, alertas, reajuste manual)
+- [ ] Gestão de funcionários (adicionar, editar, remover, visualizar desempenho) *(Não essencial)*
+- [ ] Gestão de produtos e categorias (CRUD, filtros, buscas)
+- [ ] Financeiro (receita total/por período, lucro estimado) *(Lucro não essencial)*
+- [ ] Exportação de relatórios em PDF *(Não essencial)*
+- [ ] Configurações (editar perfil/adega, mudar senha/e-mail, encerrar conta)
+
+### 5. 👥 Cadastro e Gestão de Funcionários *(REMOVIDO DO MVP)*
+- [ ] Cadastro de colaboradores (nome, e-mail, função)
+- [ ] Permissões restritas para funcionários
+
+---
+
+## 📜 Scripts Úteis
+- `pnpm typecheck` – Checagem de tipos TypeScript
+- `pnpm db:generate` – Gera migrações Drizzle
+- `pnpm db:push` – Aplica migrações no banco
+- `pnpm dev:email` – Dev server para templates de email
+
+---
+
+## 📄 Licença
+ISC
+
+---
+
+## 📬 Contato
+Dúvidas, sugestões ou problemas? Envie um email para suporte@adegatech.com
