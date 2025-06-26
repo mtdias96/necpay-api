@@ -15,10 +15,10 @@ export const signUpSchema = z.object({
   }),
 
   store: z.object({
-    nameStore: z.string().min(2, 'O nome deve ter no mínimo 2 caracteres'),
-    emailStore: z.string().email('E-mail inválido').optional(),
-    phoneStore: z.string()
-      .transform((val) => val.replace(/\D/g, '')) // remove qualquer caractere não numérico
+    name: z.string().min(2, 'O nome deve ter no mínimo 2 caracteres'),
+    email: z.string().email('E-mail inválido').optional(),
+    phone: z.string()
+      .transform((val) => val.replace(/\D/g, ''))
       .refine((val) => val.length === 10 || val.length === 11, {
         message: 'O número deve ter 10 ou 11 dígitos (com DDD)',
       }).optional(),
