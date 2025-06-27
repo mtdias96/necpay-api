@@ -9,9 +9,9 @@ export class NameStoreAlreadyInUse extends ApplicationError {
   constructor() {
     super();
 
-    this.name = 'NameStoreAlreadyInUse';
-    this.message = 'This name Store is already in use';
-    this.code = ErrorCode.NAME_STORE_ALREADY_IN_USE;
+    this.name = 'NameAlreadyInUse';
+    this.message = 'This name is already in use';
+    this.code = ErrorCode.NAME_ALREADY_IN_USE;
   }
 
 }
