@@ -32,5 +32,6 @@ build:
 
 functions:
   - ${file(./sls/functions/auth.yml)}
+  - ${file(./sls/functions/category.yml)}
 resources:
   - ${file(./sls/resources/UserPool.yml)}
