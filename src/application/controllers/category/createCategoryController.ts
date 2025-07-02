@@ -6,14 +6,14 @@ import { createCategoryBody, createCategorySchema } from './schemas/createCatego
 
 @Injectable()
 @Schema(createCategorySchema)
-export class CreateCategoryController extends Controller<'private', createCategoryController.Response> {
+export class CreateCategoryController extends Controller<'private', CreateCategoryController.Response> {
   constructor(private readonly createCategoryUseCase: CreateCategoryUseCase) {
     super();
   }
 
-  protected override async handle({ body }: Controller.Request<'private', createCategoryBody>): Promise<Controller.Response<createCategoryController.Response>> {
-    const category = body;
-    await this.createCategoryUseCase.execute(category);
+  protected override async handle({ body, storeId }: Controller.Request<'private', createCategoryBody>): Promise<Controller.Response<CreateCategoryController.Response>> {
+    const { name } = body;
+    await this.createCategoryUseCase.execute({ name, storeId });
 
     return {
       statusCode: 201,
@@ -22,6 +22,6 @@ export class CreateCategoryController extends Controller<'private', createCatego
 
 }
 
-export namespace createCategoryController {
+export namespace CreateCategoryController {
   export type Response = null
 }
