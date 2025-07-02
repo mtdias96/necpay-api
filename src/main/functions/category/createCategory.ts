@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 
-import { CreateCategoryController } from '@application/controllers/category/createCategoryController';
+import { CreateCategoryController } from '@application/controllers/category/CreateCategoryController';
 import { Registry } from '@kernel/di/Registry';
 import { lambdaHttpAdapter } from '@main/adapters/lambdaHttpAdapter';
 
