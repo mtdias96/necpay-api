@@ -17,7 +17,7 @@ export function lambdaHttpAdapter(controller: Controller<any, unknown>) {
       const queryParams = event.queryStringParameters ?? {};
       const storeId = (
         'authorizer' in event.requestContext
-          ? event.requestContext.authorizer.jwt.claims.internalId as string
+          ? event.requestContext.authorizer.jwt.claims.storeId as string
           : null
       );
 
