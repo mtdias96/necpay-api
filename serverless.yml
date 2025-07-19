@@ -33,5 +33,7 @@ build:
 functions:
   - ${file(./sls/functions/auth.yml)}
   - ${file(./sls/functions/category.yml)}
+  - ${file(./sls/functions/product.yml)}
 resources:
   - ${file(./sls/resources/UserPool.yml)}
+  - ${file(./sls/resources/ProductsBucket.yml)}

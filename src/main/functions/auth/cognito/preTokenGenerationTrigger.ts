@@ -6,6 +6,7 @@ export async function handler(event: PreTokenGenerationV2TriggerEvent) {
       accessTokenGeneration: {
         claimsToAddOrOverride: {
           storeId: event.request.userAttributes['custom:storeId'],
+          internalId: event.request.userAttributes['custom:internalId'],
         },
       },
     },

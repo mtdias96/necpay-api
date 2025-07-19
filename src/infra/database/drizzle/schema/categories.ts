@@ -5,7 +5,9 @@ export const categoriesTable = pgTable(
   'categories',
   {
     id: uuid('id').defaultRandom().primaryKey(),
-    storeId: uuid('store_id').notNull().references(() => storesTable.id),
+    storeId: uuid('store_id')
+      .references(() => storesTable.id, { onDelete: 'cascade' })
+      .notNull(),
     name: varchar('name', { length: 244 }).notNull(),
     iconPath: varchar('icon_path', { length: 500 }),
     active: boolean('active').default(true).notNull(),

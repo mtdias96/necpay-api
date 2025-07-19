@@ -52,6 +52,7 @@ export class SignUpUseCase {
         email,
         password,
         storeId: store.id,
+        internalId: account.id,
       });
 
       this.saga.addCompensation(() => this.authGateway.deleteUser({ externalId }));

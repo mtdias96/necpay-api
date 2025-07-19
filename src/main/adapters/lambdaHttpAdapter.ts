@@ -21,11 +21,20 @@ export function lambdaHttpAdapter(controller: Controller<any, unknown>) {
           : null
       );
 
+      const accountId = (
+        'authorizer' in event.requestContext
+          ? event.requestContext.authorizer.jwt.claims.internalId as string
+          : null
+      );
+
+      console.log({ lambda: accountId });
+
       const response = await controller.execute({
         body,
         params,
         queryParams,
-        storeId,
+        storeId: storeId as string,
+        accountId: accountId as string,
       });
 
       return {
