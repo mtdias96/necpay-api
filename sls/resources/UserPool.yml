@@ -20,6 +20,11 @@ Resources:
           Required: false
           Mutable: true
           AttributeDataType: String
+        - Name: internalId
+          Required: false
+          Mutable: false
+          AttributeDataType: String
+
       Policies:
         PasswordPolicy:
           MinimumLength: 8

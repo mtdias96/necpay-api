@@ -2,3 +2,6 @@ statements:
   - Effect: Allow
     Action: cognito-idp:AdminDeleteUser
     Resource: !GetAtt UserPool.Arn
+  - Effect: Allow
+    Action: s3:PutObject
+    Resource: !Sub '${ProductsBucket.Arn}/*'

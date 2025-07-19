@@ -5,6 +5,7 @@ import { env } from './env';
 export class AppConfig {
   readonly database: AppConfig.Database;
   readonly auth: AppConfig.Auth;
+  readonly storage: AppConfig.Storage;
 
   constructor() {
     this.auth = {
@@ -14,11 +15,17 @@ export class AppConfig {
         clientSecret: env.COGNITO_CLIENT_SECRET,
       },
     };
+
+    this.storage = {
+      productsBucket: env.PRODUCTS_BUCKET,
+    };
+
     this.database = {
       neon: {
         baseURL: env.DATABASE_URL,
       },
     };
+
   }
 }
 
@@ -35,5 +42,9 @@ export namespace AppConfig {
       clientId: string
       clientSecret: string
     }
+  }
+
+  export type Storage = {
+    productsBucket: string;
   }
 }

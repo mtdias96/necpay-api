@@ -1,0 +1,1 @@
+ALTER TABLE "stock_movements" ALTER COLUMN "id" SET DATA TYPE uuid;

@@ -7,7 +7,8 @@ export const storesTable = pgTable('stores', {
   name: varchar('name', { length: 244 }).unique().notNull(),
   email: varchar('email'),
   phone: varchar('phone'),
-  accountId: uuid('account_id').references(() => accountsTable.id),
+
+  accountId: uuid('account_id').references(() => accountsTable.id).notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
 
 });

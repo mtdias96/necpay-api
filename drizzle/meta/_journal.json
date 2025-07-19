@@ -50,6 +50,48 @@
       "when": 1750991302686,
       "tag": "0006_fuzzy_obadiah_stane",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1751463900170,
+      "tag": "0007_slim_mister_fear",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1752105402909,
+      "tag": "0008_calm_sentinel",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1752107419262,
+      "tag": "0009_powerful_kingpin",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1752620343296,
+      "tag": "0010_absent_anita_blake",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1752620473342,
+      "tag": "0011_talented_jasper_sitwell",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1752929707533,
+      "tag": "0012_panoramic_network",
+      "breakpoints": true
     }
   ]
 }
