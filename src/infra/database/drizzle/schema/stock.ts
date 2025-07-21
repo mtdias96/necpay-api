@@ -3,7 +3,7 @@ import { productsTable } from './product';
 import { storesTable } from './stores';
 
 export const stockMovementsTable = pgTable('stock_movements', {
-  id: uuid('id').primaryKey(),
+  id: uuid('id').defaultRandom().primaryKey(),
   storeId: uuid('store_id').references(() => storesTable.id).notNull(),
   productId: uuid('product_id').references(() => productsTable.id).notNull(),
   type: varchar('type', { length: 20 }).notNull(), // 'ENTRY' (compra) ou 'EXIT' (venda ou perda)
