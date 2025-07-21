@@ -27,8 +27,6 @@ export function lambdaHttpAdapter(controller: Controller<any, unknown>) {
           : null
       );
 
-      console.log({ lambda: accountId });
-
       const response = await controller.execute({
         body,
         params,

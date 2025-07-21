@@ -92,6 +92,13 @@
       "when": 1752929707533,
       "tag": "0012_panoramic_network",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1753136683941,
+      "tag": "0013_magenta_mad_thinker",
+      "breakpoints": true
     }
   ]
 }

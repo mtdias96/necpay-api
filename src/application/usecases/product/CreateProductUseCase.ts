@@ -1,5 +1,7 @@
 import { Product } from '@application/entities/Product';
+import { ProductAlreadyInUse } from '@application/errors/application/ProductAlreadyExists';
 import { ProductRepository } from '@infra/database/drizzle/repositories/ProductRepository';
+import { CreateProductUnitOfWork } from '@infra/database/drizzle/uow/CreateProductUnitOfWork';
 import { ProductsFileStorageGateway } from '@infra/gateways/ProductsFileStorageGateway';
 import { Injectable } from '@kernel/decorators/Injectable';
 
@@ -8,6 +10,7 @@ export class CreateProductUseCase {
   constructor(
     private readonly productRepository: ProductRepository,
     private readonly productsFileStorageGateway: ProductsFileStorageGateway,
+    private readonly createProductUnitOfWork: CreateProductUnitOfWork,
   ) { }
 
   async execute({
@@ -16,6 +19,12 @@ export class CreateProductUseCase {
     file,
     product,
   }: CreateProductUseCase.Input): Promise<CreateProductUseCase.Output> {
+
+    const productExists = await this.productRepository.findByName(storeId, product.name);
+
+    if (productExists) {
+      throw new ProductAlreadyInUse();
+    }
 
     const inputFileKey = ProductsFileStorageGateway.generateInputFileKey({
       accountId,
@@ -32,7 +41,7 @@ export class CreateProductUseCase {
     });
 
     const [, { uploadSignature }] = await Promise.all([
-      this.productRepository.create(newProduct),
+      this.createProductUnitOfWork.run(newProduct),
       this.productsFileStorageGateway.createPOST({
         productId: newProduct.id,
         file: {
