@@ -1,34 +1,36 @@
 import { Product } from '@application/entities/Product';
 import { DrizzleClient } from '@infra/clients/drizzleClient';
 import { Injectable } from '@kernel/decorators/Injectable';
+import { and, eq, InferSelectModel } from 'drizzle-orm';
 import { productsTable } from '../schema/product';
+import { UnitOfWorkTransaction } from '../types/UnitOfWorkTransaction';
+
+export type ProductDb = InferSelectModel<typeof productsTable>;
 
 @Injectable()
 export class ProductRepository {
   constructor(private readonly db: DrizzleClient) { }
 
-  async create(product: Product): Promise<void> {
-    // await this.db.httpClient.insert(productsTable).values({
-    //   ...product,
-    //   price: product.price.toString(),
-    //   costPrice: product.costPrice.toString(),
-    // });
+  async findByName(storeId: string, name: string): Promise<ProductDb | null> {
+    const result = await this.db.httpClient
+      .select()
+      .from(productsTable)
+      .where(
+        and(
+          eq(productsTable.name, name),
+          eq(productsTable.storeId, storeId),
+        ),
+      );
 
-    await this.db.httpClient.insert(productsTable).values({
-      id: product.id,
-      storeId: product.storeId,
-      categoryId: product.categoryId,
-      name: product.name,
-      inputFileKey: product.inputFileKey,
-      barcode: product.barcode,
+    return result[0] ?? null;
+  }
+
+  async create(trx: UnitOfWorkTransaction, product: Product): Promise<void> {
+    const transaction = trx;
+    await transaction.insert(productsTable).values({
+      ...product,
       price: product.price.toString(),
       costPrice: product.costPrice.toString(),
-      stockAlert: product.stockAlert,
-      currentStock: product.currentStock,
-      status: product.status,
-      createdAt: product.createdAt,
-      updatedAt: product.updatedAt,
     });
-
   }
 }
