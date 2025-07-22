@@ -6,3 +6,11 @@ createProduct:
         method: POST
         authorizer:
           name: CognitoAuthorizer
+listProducts:
+  handler: src/main/functions/product/listProducts.handler
+  events:
+    - httpApi:
+        path: /products
+        method: GET
+        authorizer:
+          name: CognitoAuthorizer
