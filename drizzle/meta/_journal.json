@@ -99,6 +99,13 @@
       "when": 1753136683941,
       "tag": "0013_magenta_mad_thinker",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1753218781873,
+      "tag": "0014_rapid_mentallo",
+      "breakpoints": true
     }
   ]
 }

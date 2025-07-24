@@ -1,0 +1,1 @@
+ALTER TABLE "products" ADD COLUMN "input_type" varchar(50);
