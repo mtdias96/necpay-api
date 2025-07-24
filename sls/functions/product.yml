@@ -14,3 +14,11 @@ listProducts:
         method: GET
         authorizer:
           name: CognitoAuthorizer
+getProductById:
+  handler: src/main/functions/product/getProductById.handler
+  events:
+    - httpApi:
+        path: /products/{productId}
+        method: GET
+        authorizer:
+          name: CognitoAuthorizer
