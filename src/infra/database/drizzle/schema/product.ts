@@ -36,6 +36,7 @@ export const productsTable = pgTable(
     costPrice: numeric('cost_price', { precision: 10, scale: 2 }).notNull(),
     stockAlert: integer('stock_alert').notNull().default(0),
     currentStock: integer('current_stock').notNull().default(0),
+    inputType: varchar('input_type', { length: 50 }),
     status: productStatusEnum('status').notNull(),
     description: text('description'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
