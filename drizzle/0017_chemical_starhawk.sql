@@ -1,0 +1,1 @@
+ALTER TABLE "stock_movements" ALTER COLUMN "type" SET DATA TYPE "public"."stock_movement_type";
