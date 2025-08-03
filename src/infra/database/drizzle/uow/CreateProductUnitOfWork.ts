@@ -16,12 +16,12 @@ export class CreateProductUnitOfWork {
     await this.drizzleClient.wsClient.transaction(async (tx) => {
       await this.productRepository.create(tx, product);
 
-      await this.stockMovementRepository.addStockMovement(tx, {
+      await this.stockMovementRepository.addStockMovement({
         productId: product.id,
         quantity: product.currentStock,
         storeId: product.storeId,
         type: 'ENTRY',
-      });
+      }, tx);
     });
   }
 }
