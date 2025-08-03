@@ -1,12 +1,14 @@
-import { index, integer, numeric, pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import { index, integer, numeric, pgEnum, pgTable, timestamp, uuid } from 'drizzle-orm/pg-core';
 import { productsTable } from './product';
 import { storesTable } from './stores';
+
+const stockMovementTypeEnum = pgEnum('stock_movement_type', ['ENTRY', 'EXIT']);
 
 export const stockMovementsTable = pgTable('stock_movements', {
   id: uuid('id').defaultRandom().primaryKey(),
   storeId: uuid('store_id').references(() => storesTable.id).notNull(),
   productId: uuid('product_id').references(() => productsTable.id).notNull(),
-  type: varchar('type', { length: 20 }).notNull(), // 'ENTRY' (compra) ou 'EXIT' (venda ou perda)
+  type: stockMovementTypeEnum('stock_movement_type').notNull(),
   quantity: integer('quantity').notNull(),
   costPrice: numeric('cost_price', { precision: 10, scale: 2 }),
   movementDate: timestamp('movement_date').defaultNow().notNull(),

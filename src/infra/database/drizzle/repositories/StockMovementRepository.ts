@@ -1,26 +1,43 @@
-import { DrizzleClient } from '@infra/clients/drizzleClient';
 import { Injectable } from '@kernel/decorators/Injectable';
 import { stockMovementsTable } from '../schema/stock';
 import { UnitOfWorkTransaction } from '../types/UnitOfWorkTransaction';
 
 @Injectable()
 export class StockMovementRepository {
-  constructor(private readonly db: DrizzleClient) { }
-
-  async addStockMovement(trx: UnitOfWorkTransaction, {
-    productId,
-    quantity,
-    storeId,
-    type,
-  }: StockMovementRepository.addStockMovementInput) {
-    const transaction = trx;
-    await transaction.insert(stockMovementsTable).values({
+  async addStockMovement(
+    {
       productId,
-      storeId,
       quantity,
+      storeId,
       type,
-    }).execute();
+    }: StockMovementRepository.addStockMovementInput,
+    trx: UnitOfWorkTransaction,
+  ) {
+    const transaction = trx;
+    await transaction
+      .insert(stockMovementsTable)
+      .values({
+        productId,
+        storeId,
+        quantity,
+        type,
+      })
+      .execute();
+  }
 
+  async addStockMovementsExit(
+    movements: StockMovementRepository.addStockMovementInput[],
+    trx: UnitOfWorkTransaction,
+  ) {
+    const transaction = trx;
+    const values = movements.map(m => ({
+      productId: m.productId,
+      storeId: m.storeId,
+      quantity: m.quantity,
+      type: 'EXIT' as const,
+      costPrice: m.costPrice?.toFixed(2),
+    }));
+    await transaction.insert(stockMovementsTable).values(values).execute();
   }
 }
 
@@ -31,5 +48,5 @@ export namespace StockMovementRepository {
     type: 'ENTRY' | 'EXIT';
     quantity: number;
     costPrice?: number;
-  }
+  };
 }

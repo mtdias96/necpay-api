@@ -1,0 +1,1 @@
+ALTER TABLE "stock_movements" RENAME COLUMN "type" TO "stock_movement_type";

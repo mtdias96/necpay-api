@@ -1,0 +1,8 @@
+placeOrder:
+  handler: src/main/functions/order/placeOrder.handler
+  events:
+    - httpApi:
+        path: /orders
+        method: POST
+        authorizer:
+          name: CognitoAuthorizer
