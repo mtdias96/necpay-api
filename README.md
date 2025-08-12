@@ -17,7 +17,7 @@ API para gestão de adegas, focada em autenticação, onboarding e estruturaçã
 ---
 
 ## 🚀 Descrição
-A AdegaTech API é o backend de um sistema para gestão de adegas, permitindo cadastro de proprietários, onboarding de estabelecimentos, autenticação segura, e servindo de base para módulos de produtos, vendas, relatórios e financeiro.
+A Vexy API é o backend de um sistema para gestão de estabelecimentos, permitindo cadastro de proprietários, onboarding de estabelecimentos, autenticação segura, e servindo de base para módulos de produtos, vendas, relatórios e financeiro.
 
 ---
 
