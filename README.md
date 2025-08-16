@@ -10,7 +10,7 @@ authorName: 'Serverless, Inc.'
 authorAvatar: 'https://avatars1.githubusercontent.com/u/13742415?s=200&v=4'
 -->
 
-# VexyPDV API
+# NecPay API
 
 API para gestão de estabelecimentos, focada em autenticação, onboarding e estruturação inicial para controle de produtos, vendas e relatórios. Desenvolvida em Node.js, Serverless e AWS, com autenticação via Cognito e banco de dados PostgreSQL.
 
