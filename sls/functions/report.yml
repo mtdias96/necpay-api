@@ -1,0 +1,8 @@
+getSaleByPeriod:
+  handler: src/main/functions/report/getSaleByPeriod.handler
+  events:
+    - httpApi:
+        path: /report/sales
+        method: GET
+        authorizer:
+          name: CognitoAuthorizer
