@@ -2,7 +2,7 @@ import { Category } from '@application/entities/Category';
 import { DrizzleClient } from '@infra/clients/drizzleClient';
 import { Injectable } from '@kernel/decorators/Injectable';
 import { eq } from 'drizzle-orm';
-import { categoriesTable } from '../schema/categories';
+import { categoriesTable, TCategory } from '../schema/categories';
 
 @Injectable()
 export class CategoryRepository {
@@ -18,4 +18,14 @@ export class CategoryRepository {
   ): Promise<void> {
     await this.db.httpClient.insert(categoriesTable).values(category);
   }
+
+  async findById(categoryId: string, storeId: string) : Promise<TCategory | undefined> {
+    return await this.db.httpClient.query.categoriesTable.findFirst({
+      where: (categories, { eq, and }) => and(
+        eq(categories.id, categoryId),
+        eq(categories.storeId, storeId),
+        ),
+      });
+  }
+
 }
