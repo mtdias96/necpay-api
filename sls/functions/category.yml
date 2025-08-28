@@ -14,3 +14,11 @@ listCategory:
         method: GET
         authorizer:
           name: CognitoAuthorizer
+getCategoryById:
+  handler: src/main/functions/category/getCategoryById.handler
+  events:
+    - httpApi:
+        path: /category/{categoryId}
+        method: GET
+        authorizer:
+          name: CognitoAuthorizer
