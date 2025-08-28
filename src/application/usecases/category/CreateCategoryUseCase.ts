@@ -1,35 +1,43 @@
-import { Category } from '@application/entities/Category';
-import { NameStoreAlreadyInUse } from '@application/errors/application/NameStoreAlreadyInUse';
-import { CategoryRepository } from '@infra/database/drizzle/repositories/CategoryRepository';
+import { Controller } from '@application/contracts/Controller';
 import { Injectable } from '@kernel/decorators/Injectable';
+import { ListCategoriesUseCase } from './ListCategoriesUseCase';
 
 @Injectable()
-export class CreateCategoryUseCase {
-  constructor(
-    private readonly categoryRepository: CategoryRepository,
-  ) { }
+export class ListCategoryController extends Controller<'private', ListCategoryController.Response> {
+  constructor(private readonly listCategoriesUseCase: ListCategoriesUseCase) {
+    super();
+  }
 
-  async execute({ name, storeId, iconPath }: CreateCategoryUseCase.Input): Promise<void> {
-    const categoryAlreadyExists = await this.categoryRepository.findByName(name);
-
-    if (categoryAlreadyExists) {
-      throw new NameStoreAlreadyInUse();
-    }
-
-    const category = new Category({
+  async handle({ storeId, queryParams }: Controller.Request<'private'>): Promise<Controller.Response<ListCategoryController.Response>> {
+    const {
       name,
+      page = 1,
+      limit = 10,
+      order = 'asc',
+    } = queryParams as ListCategoryController.CategoryParams;
+
+    const result = await this.listCategoriesUseCase.execute({
       storeId,
-      iconPath,
+      page: Math.max(1, page),
+      limit: Math.min(limit, 100),
+      order,
+      name,
     });
 
-    await this.categoryRepository.create(category);
+    return {
+      statusCode: 200,
+      body: result,
+    };
   }
 }
 
-export namespace CreateCategoryUseCase {
-  export type Input = {
-    storeId: string;
-    name: string;
-    iconPath?: string;
-  }
+export namespace ListCategoryController {
+  export type Response = ListCategoriesUseCase.Output;
+
+  export type CategoryParams = {
+    name?: string;
+    page: number;
+    limit: number;
+    order: 'asc' | 'desc';
+  };
 }

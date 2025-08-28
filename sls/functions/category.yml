@@ -6,3 +6,11 @@ createCategory:
         method: POST
         authorizer:
           name: CognitoAuthorizer
+listCategory:
+  handler: src/main/functions/category/listCategory.handler
+  events:
+    - httpApi:
+        path: /category
+        method: GET
+        authorizer:
+          name: CognitoAuthorizer
