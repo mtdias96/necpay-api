@@ -1,3 +1,4 @@
+import { InferSelectModel } from 'drizzle-orm';
 import { boolean, index, pgTable, timestamp, unique, uuid, varchar } from 'drizzle-orm/pg-core';
 import { storesTable } from './stores';
 
@@ -19,3 +20,5 @@ export const categoriesTable = pgTable(
     unique('categories_store_id_name_unique').on(table.storeId, table.name),
   ],
 );
+
+export type TCategory = InferSelectModel<typeof categoriesTable>;
