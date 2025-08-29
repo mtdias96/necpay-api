@@ -22,3 +22,11 @@ getCategoryById:
         method: GET
         authorizer:
           name: CognitoAuthorizer
+updateCategory:
+  handler: src/main/functions/category/updateCategory.handler
+  events:
+    - httpApi:
+        path: /category/{categoryId}
+        method: PUT
+        authorizer:
+          name: CognitoAuthorizer
