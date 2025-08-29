@@ -35,6 +35,13 @@ export class CategoryRepository {
     return result[0];
   }
 
+  async delete(categoryId: string, storeId: string): Promise<void> {
+     await this.db.httpClient.delete(categoriesTable).where(and(
+          eq(categoriesTable.id, categoryId),
+          eq(categoriesTable.storeId, storeId),
+    ));
+  }
+
   async findByName(name: string): Promise<Category | null> {
     const result = await this.db.httpClient.select().from(categoriesTable).where(eq(categoriesTable.name, name));
     return result[0];
