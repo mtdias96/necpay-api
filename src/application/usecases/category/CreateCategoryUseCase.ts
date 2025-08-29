@@ -1,43 +1,35 @@
-import { Controller } from '@application/contracts/Controller';
+import { Category } from '@application/entities/Category';
+import { NameStoreAlreadyInUse } from '@application/errors/application/NameStoreAlreadyInUse';
+import { CategoryRepository } from '@infra/database/drizzle/repositories/CategoryRepository';
 import { Injectable } from '@kernel/decorators/Injectable';
-import { ListCategoriesUseCase } from './ListCategoriesUseCase';
 
 @Injectable()
-export class ListCategoryController extends Controller<'private', ListCategoryController.Response> {
-  constructor(private readonly listCategoriesUseCase: ListCategoriesUseCase) {
-    super();
-  }
+export class CreateCategoryUseCase {
+  constructor(
+    private readonly categoryRepository: CategoryRepository,
+  ) { }
 
-  async handle({ storeId, queryParams }: Controller.Request<'private'>): Promise<Controller.Response<ListCategoryController.Response>> {
-    const {
+  async execute({ name, storeId, iconPath }: CreateCategoryUseCase.Input): Promise<void> {
+    const categoryAlreadyExists = await this.categoryRepository.findByName(name);
+
+    if (categoryAlreadyExists) {
+      throw new NameStoreAlreadyInUse();
+    }
+
+    const category = new Category({
       name,
-      page = 1,
-      limit = 10,
-      order = 'asc',
-    } = queryParams as ListCategoryController.CategoryParams;
-
-    const result = await this.listCategoriesUseCase.execute({
       storeId,
-      page: Math.max(1, page),
-      limit: Math.min(limit, 100),
-      order,
-      name,
+      iconPath,
     });
 
-    return {
-      statusCode: 200,
-      body: result,
-    };
+    await this.categoryRepository.create(category);
   }
 }
 
-export namespace ListCategoryController {
-  export type Response = ListCategoriesUseCase.Output;
-
-  export type CategoryParams = {
-    name?: string;
-    page: number;
-    limit: number;
-    order: 'asc' | 'desc';
-  };
+export namespace CreateCategoryUseCase {
+  export type Input = {
+    storeId: string;
+    name: string;
+    iconPath?: string;
+  }
 }

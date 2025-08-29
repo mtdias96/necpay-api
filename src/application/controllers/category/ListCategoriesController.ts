@@ -1,11 +1,10 @@
 import { Controller } from '@application/contracts/Controller';
-import { Category } from '@application/entities/Category';
-import { FilterCategoryQuery } from '@application/query/FilterCategoryQuery copy';
+import { ListCategoriesUseCase } from '@application/usecases/category/ListCategoriesUseCase';
 import { Injectable } from '@kernel/decorators/Injectable';
 
 @Injectable()
 export class ListCategoryController extends Controller<'private', ListCategoryController.Response> {
-  constructor(private readonly filterCategoryQuery: FilterCategoryQuery) {
+  constructor(private readonly listCategoriesUseCase: ListCategoriesUseCase) {
     super();
   }
 
@@ -17,44 +16,28 @@ export class ListCategoryController extends Controller<'private', ListCategoryCo
       order = 'asc',
     } = queryParams as ListCategoryController.CategoryParams;
 
-  const result = await this.filterCategoryQuery.execute({
-    storeId,
-    page: Math.max(1, page),
-    limit: Math.min(limit, 100),
-    order,
-    name,
-  });
+    const result = await this.listCategoriesUseCase.execute({
+      storeId,
+      page: Math.max(1, page),
+      limit: Math.min(limit, 100),
+      order,
+      name,
+    });
 
-  return {
-    statusCode: 200,
-    body: {
-      categories: result.categories,
-      meta: {
-        total: result.total,
-        page: result.page,
-        limit: result.limit,
-        totalPages: result.totalPages,
-      },
-    },
-  };
-
+    return {
+      statusCode: 200,
+      body: result,
+    };
   }
 }
+
 export namespace ListCategoryController {
-  export type Response = {
-    categories: Category[] | undefined;
-    meta: {
-      total: number,
-      page: number,
-      limit: number,
-      totalPages: number,
-    },
-  }
+  export type Response = ListCategoriesUseCase.Output;
 
   export type CategoryParams = {
     name?: string;
     page: number;
     limit: number;
-    order : 'asc' | 'desc'
-  }
+    order: 'asc' | 'desc';
+  };
 }
