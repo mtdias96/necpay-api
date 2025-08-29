@@ -169,6 +169,13 @@
       "when": 1754356720972,
       "tag": "0023_condemned_vapor",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1756509029077,
+      "tag": "0024_curved_aqueduct",
+      "breakpoints": true
     }
   ]
 }

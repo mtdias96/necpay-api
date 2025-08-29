@@ -26,9 +26,8 @@ export const productsTable = pgTable(
       .references(() => storesTable.id, { onDelete: 'cascade' })
       .notNull(),
     categoryId: uuid('category_id')
-      .references(() => categoriesTable.id)
+      .references(() => categoriesTable.id, { onDelete: 'cascade' })
       .notNull(),
-
     name: varchar('name', { length: 255 }).notNull(),
     inputFileKey: varchar('image_path', { length: 500 }),
     barcode: varchar('barcode', { length: 50 }).unique(),
@@ -42,6 +41,7 @@ export const productsTable = pgTable(
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
   },
+
   (table) => [
     index('products_store_id_idx').on(table.storeId),
     index('products_barcode_idx').on(table.barcode),
