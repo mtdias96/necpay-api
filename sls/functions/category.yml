@@ -30,3 +30,11 @@ updateCategory:
         method: PUT
         authorizer:
           name: CognitoAuthorizer
+deleteCategory:
+  handler: src/main/functions/category/deleteCategory.handler
+  events:
+    - httpApi:
+        path: /category/{categoryId}
+        method: DELETE
+        authorizer:
+          name: CognitoAuthorizer
