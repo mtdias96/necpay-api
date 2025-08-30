@@ -42,8 +42,8 @@ export class FilterCategoryQuery {
       SELECT
         id,
         name,
-        store_id,
-        icon_path,
+        store_id AS "storeId",
+        icon_path AS "iconPath",
         active,
         created_at,
         COALESCE(total_count, 0) as total_count
@@ -72,7 +72,7 @@ export class FilterCategoryQuery {
       storeId: row.storeId,
       active: row.active,
       iconPath: row.iconPath,
-
+      createdAt: row.createdAt,
     }));
 
     return {

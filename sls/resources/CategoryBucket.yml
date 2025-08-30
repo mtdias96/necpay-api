@@ -1,0 +1,6 @@
+Resources:
+  CategoryBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: adegatech-${self:provider.stage}-category-bucket-adegatechv2

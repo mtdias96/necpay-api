@@ -11,7 +11,13 @@ export class CategoryRepository {
   async create(
     category: Category,
   ): Promise<void> {
-    await this.db.httpClient.insert(categoriesTable).values(category);
+     await this.db.httpClient.insert(categoriesTable).values({
+      id: category.id,
+      name: category.name,
+      iconPath: category.iconPath,
+      storeId: category.storeId,
+      active: category.active,
+    } satisfies typeof categoriesTable.$inferInsert );
   }
 
   async update({
