@@ -18,6 +18,7 @@ export class AppConfig {
 
     this.storage = {
       productsBucket: env.PRODUCTS_BUCKET,
+      categoryBucket: env.CATEGORY_BUCKET,
     };
 
     this.database = {
@@ -46,5 +47,6 @@ export namespace AppConfig {
 
   export type Storage = {
     productsBucket: string;
+    categoryBucket: string;
   }
 }
