@@ -13,7 +13,7 @@ export class Category {
     this.id = attrs.id ?? randomUUID().toString();
     this.storeId = attrs.storeId;
     this.name = attrs.name;
-    this.iconPath = attrs.iconPath ?? null;
+    this.iconPath = attrs.iconPath ;
     this.active = attrs.active ?? true;
     this.createdAt = attrs.createdAt ?? new Date();
   }
@@ -23,7 +23,7 @@ export namespace Category {
     id?: string
     storeId: string;
     name: string;
-    iconPath?: string | null;
+    iconPath: string | null
     active?: boolean
     createdAt?: Date;
   }
