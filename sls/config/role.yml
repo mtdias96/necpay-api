@@ -5,3 +5,6 @@ statements:
   - Effect: Allow
     Action: s3:PutObject
     Resource: !Sub '${ProductsBucket.Arn}/*'
+  - Effect: Allow
+    Action: s3:PutObject
+    Resource: !Sub '${CategoryBucket.Arn}/*'

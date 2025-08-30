@@ -1,5 +1,5 @@
 import { Category } from '@application/entities/Category';
-import { FilterCategoryQuery } from '@application/query/FilterCategoryQuery copy';
+import { FilterCategoryQuery } from '@application/query/FilterCategoryQuery';
 
 import { Injectable } from '@kernel/decorators/Injectable';
 
@@ -16,6 +16,8 @@ export class ListCategoriesUseCase {
       order: input.order,
       name: input.name,
     });
+
+    console.log( result.categories );
 
     return {
       categories: result.categories,
