@@ -11,8 +11,8 @@ const TOKEN = 'eyJraWQiOiJpcWw4UVhNeGVIVERLRTVrZnR6dDZTNk5nempDRmZIczlZb0lQUmxYY
 interface IProductData {
   categoryId: string;
   name: string;
-  price: number;
-  costPrice: number;
+  price: string;
+  costPrice: string;
   stockAlert: number;
   currentStock: number;
   barcode: string;
@@ -22,9 +22,9 @@ interface IProductData {
 // Dados da cerveja Heineken
 const heinekenData: IProductData = {
   categoryId: 'dc8f7606-ac1e-4541-9822-b29f9cecdf05',
-  name: 'TESTE DELETE E UPDATE 33',
-  price: 4.99,
-  costPrice: 3.50,
+  name: 'TESTE DE UPLOAD FEITO PELO SCRIPT 2',
+  price: '4.99',
+  costPrice: '3.50',
   stockAlert: 10,
   currentStock: 50,
   barcode: `${(Math.random() * 100).toString()}`,
@@ -59,15 +59,15 @@ async function createProduct(
   fileSize: number,
 ): Promise<IPresignDecoded> {
   console.log(`🚀 Requesting presigned POST for ${fileSize} bytes of type ${fileType}`);
-  const res = await fetch(API_URL, {
-    method: 'POST',
+  const res = await fetch(`${API_URL}/${'64e683e7-f2d2-428f-9ed5-5b1485e68903'}`, {
+    method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${TOKEN}`,
     },
     body: JSON.stringify({
-      file: { type: fileType, size: fileSize },
-      product: heinekenData,
+      productUpdate: heinekenData,
+      fileUpdate: { type: fileType, size: fileSize },
     }),
   });
 
@@ -76,6 +76,12 @@ async function createProduct(
   }
 
   const json = (await res.json()) as IPresignResponse;
+  console.log('🔍 API Response:', JSON.stringify(json, null, 2));
+
+  if (!json.uploadSignature) {
+    throw new Error('API response missing uploadSignature field');
+  }
+
   const decoded = JSON.parse(
     Buffer.from(json.uploadSignature, 'base64').toString('utf-8'),
   ) as IPresignDecoded;

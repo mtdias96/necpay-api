@@ -85,7 +85,7 @@ function buildFormData(
   for (const [key, value] of Object.entries(fields)) {
     form.append(key, value);
   }
-  const blob = new Blob([fileData], { type: fileType });
+  const blob = new Blob([new Uint8Array(fileData)], { type: fileType });
   form.append('file', blob, filename);
   return form;
 }
