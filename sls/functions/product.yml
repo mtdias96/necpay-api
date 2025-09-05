@@ -30,3 +30,11 @@ updateProduct:
         method: PUT
         authorizer:
           name: CognitoAuthorizer
+deleteProduct:
+  handler: src/main/functions/product/deleteProduct.handler
+  events:
+    - httpApi:
+        path: /product/{productId}
+        method: DELETE
+        authorizer:
+          name: CognitoAuthorizer
