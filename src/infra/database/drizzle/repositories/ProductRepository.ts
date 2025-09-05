@@ -20,26 +20,33 @@ export class ProductRepository {
     });
   }
 
-    async update({
-      productId,
-      storeId,
-      productUpdate,
-    }: {
-      productId: string
-      storeId: string
-      productUpdate:  Partial<ProductDb>
-    }): Promise<ProductDb> {
-      const result = await this.db.httpClient.update(productsTable)
-        .set(productUpdate)
-        .where(
-          and(
-            eq(productsTable.id, productId),
-            eq(productsTable.storeId, storeId),
-          ),
-        ).returning();
+  async delete(productId: string, storeId: string): Promise<void> {
+    await this.db.httpClient.delete(productsTable).where(and(
+      eq(productsTable.id, productId),
+      eq(productsTable.storeId, storeId),
+    ));
+  }
 
-      return result[0];
-    }
+  async update({
+    productId,
+    storeId,
+    productUpdate,
+  }: {
+    productId: string
+    storeId: string
+    productUpdate: Partial<ProductDb>
+  }): Promise<ProductDb> {
+    const result = await this.db.httpClient.update(productsTable)
+      .set(productUpdate)
+      .where(
+        and(
+          eq(productsTable.id, productId),
+          eq(productsTable.storeId, storeId),
+        ),
+      ).returning();
+
+    return result[0];
+  }
 
   async findById(
     storeId: string,
