@@ -20,10 +20,31 @@ export class ProductRepository {
     });
   }
 
+    async update({
+      productId,
+      storeId,
+      productUpdate,
+    }: {
+      productId: string
+      storeId: string
+      productUpdate:  Partial<ProductDb>
+    }): Promise<ProductDb> {
+      const result = await this.db.httpClient.update(productsTable)
+        .set(productUpdate)
+        .where(
+          and(
+            eq(productsTable.id, productId),
+            eq(productsTable.storeId, storeId),
+          ),
+        ).returning();
+
+      return result[0];
+    }
+
   async findById(
     storeId: string,
     productId: string,
-  ): Promise<ProductDb | null> {
+  ): Promise<ProductDb | undefined> {
     const result = await this.db.httpClient
       .select()
       .from(productsTable)
@@ -34,7 +55,7 @@ export class ProductRepository {
         ),
       );
 
-    return result[0] ?? null;
+    return result[0];
   }
 
   async findByName(storeId: string, name: string): Promise<ProductDb | null> {

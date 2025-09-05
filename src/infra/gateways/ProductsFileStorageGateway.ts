@@ -1,4 +1,5 @@
 import { Product } from '@application/entities/Product';
+import { DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
 import { s3Client } from '@infra/clients/s3Client';
 import { Injectable } from '@kernel/decorators/Injectable';
@@ -21,7 +22,6 @@ export class ProductsFileStorageGateway {
   // }
 
   static generateInputFileKey({
-    accountId,
     storeId,
     inputType,
   }: ProductsFileStorageGateway.GenerateInputFileKeyParams): string {
@@ -29,7 +29,7 @@ export class ProductsFileStorageGateway {
 
     const fileName = `${randomUUID()}.${extension}`;
 
-    return `${accountId}/${storeId}/${fileName}`;
+    return `${storeId}/${fileName}`;
   }
 
   async createPOST({
@@ -69,11 +69,24 @@ export class ProductsFileStorageGateway {
     };
   }
 
+  async deleteFile({
+    fileKey,
+  }: ProductsFileStorageGateway.DeleteFileParams): Promise<void> {
+    const bucket = this.config.storage.productsBucket;
+
+    const deleteCommand = new DeleteObjectCommand({
+      Bucket: bucket,
+      Key: fileKey,
+    });
+
+    await s3Client.send(deleteCommand);
+
+  }
+
 }
 
 export namespace ProductsFileStorageGateway {
   export type GenerateInputFileKeyParams = {
-    accountId: string;
     storeId: string;
     inputType: string;
   }
@@ -89,5 +102,9 @@ export namespace ProductsFileStorageGateway {
 
   export type CreatePOSTResult = {
     uploadSignature: string
+  }
+
+  export type DeleteFileParams = {
+    fileKey: string;
   }
 }
