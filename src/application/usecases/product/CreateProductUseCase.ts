@@ -14,7 +14,6 @@ export class CreateProductUseCase {
   ) { }
 
   async execute({
-    accountId,
     storeId,
     file,
     product,
@@ -27,7 +26,6 @@ export class CreateProductUseCase {
     }
 
     const inputFileKey = ProductsFileStorageGateway.generateInputFileKey({
-      accountId,
       storeId,
       inputType: file.inputType,
     });
@@ -61,7 +59,6 @@ export class CreateProductUseCase {
 
 export namespace CreateProductUseCase {
   export type Input = {
-    accountId: string;
     storeId: string;
     product: {
       categoryId: string;
