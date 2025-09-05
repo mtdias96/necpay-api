@@ -17,8 +17,6 @@ export class ListCategoriesUseCase {
       name: input.name,
     });
 
-    console.log( result.categories );
-
     return {
       categories: result.categories,
       meta: {
