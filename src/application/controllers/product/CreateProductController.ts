@@ -21,7 +21,6 @@ export class CreateProductController extends Controller<
   protected override async handle({
     body,
     storeId,
-    accountId,
 
   }: Controller.Request<'private', createProductBody>): Promise<
     Controller.Response<CreateProductController.Response>
@@ -33,7 +32,6 @@ export class CreateProductController extends Controller<
 
     const { productId, uploadSignature } = await this.createProductUseCase.execute(
       {
-        accountId,
         storeId,
         product: {
           ...product,
