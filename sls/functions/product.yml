@@ -22,3 +22,11 @@ getProductById:
         method: GET
         authorizer:
           name: CognitoAuthorizer
+updateProduct:
+  handler: src/main/functions/product/updateProduct.handler
+  events:
+    - httpApi:
+        path: /product/{productId}
+        method: PUT
+        authorizer:
+          name: CognitoAuthorizer
