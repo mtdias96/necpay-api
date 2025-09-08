@@ -1,52 +1,52 @@
 import { DrizzleClient } from '@infra/clients/drizzleClient';
 import { Injectable } from '@kernel/decorators/Injectable';
 import { ProductResponseType } from '@shared/types/Product';
-import { SQL, sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
+import { buildProductFilters } from './helpers/buildProductFilters';
 
 @Injectable()
 export class FilterProductsQuery {
   constructor(private readonly db: DrizzleClient) { }
 
-  async execute({
-    storeId,
-    name,
-    stockLow,
-    categoryId,
-  }: FilterProductsQuery.Input): Promise<FilterProductsQuery.Output> {
-    const filters: SQL[] = [sql`product.store_id = ${storeId}`];
+   async execute(input: FilterProductsQuery.Input): Promise<FilterProductsQuery.Output> {
+    const filters = buildProductFilters(input);
 
-    if (name) {
-      filters.push(sql`product.name ILIKE ${'%' + name + '%'}`);
-    }
+    const page = input.page ?? 1;
+    const limit = input.limit ?? 10;
+    const offset = (page - 1) * limit;
 
-    if (categoryId) {
-      filters.push(sql`product.category_id = ${categoryId}`);
-    }
-
-    if (stockLow) {
-      filters.push(sql`product.current_stock <= product.stock_alert`);
-    }
+    const orderByColumn = input.orderBy ?? 'created_at';
+    const orderDirection = input.order ?? 'desc';
 
     const whereClause = sql.join(filters, sql` AND `);
 
-    const result = await this.db.httpClient.execute(
-      sql`SELECT * FROM products product WHERE ${whereClause}`,
-    );
-
-    const itemsProduct = result.rows as ProductResponseType[];
-
-    if (!itemsProduct.length) {
-      throw new Error('No products found for the specified store.');
-    }
+    const [rows, totalResult] = await Promise.all([
+      this.db.httpClient.execute(
+        sql`
+          SELECT * FROM products product
+          WHERE ${whereClause}
+          ORDER BY ${sql.identifier(orderByColumn)} ${sql.raw(orderDirection)}
+          LIMIT ${limit} OFFSET ${offset}
+        `,
+      ),
+      this.db.httpClient.execute(
+        sql`
+          SELECT COUNT(*)::int as total
+          FROM products product
+          WHERE ${whereClause}
+        `,
+      ),
+    ]);
 
     return {
-      products: itemsProduct.map(item => ({
-        ...item,
-      })),
+      products: rows.rows as ProductResponseType[],
+      total: Number(totalResult.rows[0]?.total) | 0,
+      page,
+      limit,
     };
-
   }
 }
+
 export namespace FilterProductsQuery {
   export type Input = {
     storeId: string;
@@ -56,6 +56,7 @@ export namespace FilterProductsQuery {
     page?: number;
     limit?: number;
     order?: 'asc' | 'desc';
+    orderBy?: 'created_at' | 'name' | 'price';
   };
 
   export type Output = {
