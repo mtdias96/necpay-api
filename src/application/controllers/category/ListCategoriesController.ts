@@ -24,8 +24,6 @@ export class ListCategoryController extends Controller<'private', ListCategoryCo
       name,
     });
 
-    console.log(result);
-
     return {
       statusCode: 200,
       body: result,
