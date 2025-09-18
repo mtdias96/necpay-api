@@ -176,6 +176,20 @@
       "when": 1756509029077,
       "tag": "0024_curved_aqueduct",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1758125451487,
+      "tag": "0025_milky_stardust",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1758229875704,
+      "tag": "0026_normal_starfox",
+      "breakpoints": true
     }
   ]
 }
