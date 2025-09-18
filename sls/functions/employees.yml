@@ -1,0 +1,8 @@
+createEmployees:
+  handler: src/main/functions/employees/createEmployees.handler
+  events:
+    - httpApi:
+        path: /employees
+        method: POST
+        authorizer:
+          name: CognitoAuthorizer

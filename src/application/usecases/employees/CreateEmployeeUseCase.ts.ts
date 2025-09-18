@@ -1,6 +1,8 @@
 import { Account } from '@application/entities/Account';
+import { Employees, ERole } from '@application/entities/Employees';
 import { EmailAlreadyInUse } from '@application/errors/application/EmailAlreadyInUse';
 import { AccountRepository } from '@infra/database/drizzle/repositories/AccountRepository';
+import { CreateEmployeesUnitOfWork } from '@infra/database/drizzle/uow/CreateEmployeesUnitOfWork';
 
 import { Injectable } from '@kernel/decorators/Injectable';
 import { Saga } from '@shared/saga/Saga';
@@ -11,6 +13,7 @@ export class CreateEmployeeUseCase {
   constructor(
     private readonly authGateway: AuthGateway,
     private readonly accountRepository: AccountRepository,
+    private readonly createEmployeesUnitOfWork: CreateEmployeesUnitOfWork,
     private readonly saga: Saga,
 
   ) { }
@@ -20,6 +23,7 @@ export class CreateEmployeeUseCase {
       account: {
         email,
         name,
+        role,
         password,
       },
       storeId,
@@ -31,24 +35,41 @@ export class CreateEmployeeUseCase {
         throw new EmailAlreadyInUse();
       }
 
-      const account = new Account({ email, name });
+      const accounts = new Account({
+        email,
+        name,
+      });
+
+       const accountEmployees = new Employees({
+        accountId: accounts.id,
+        storeId,
+        role,
+      });
 
       const { externalId } = await this.authGateway.signUp({
         email,
         password,
         storeId,
-        internalId: account.id,
+        internalId: accounts.id,
       });
 
       this.saga.addCompensation(() => this.authGateway.deleteUser({ externalId }));
 
-      account.externalId = externalId;
+      accounts.externalId = externalId;
+
+      await this.createEmployeesUnitOfWork.run({
+        account: accounts,
+        employees: accountEmployees,
+      });
+
+        const {
+        accessToken,
+        refreshToken,
+      } = await this.authGateway.signIn({ email, password });
 
       return {
-        id: account.id,
-        externalId: account.externalId!,
-        email: account.email,
-        name: account.name,
+        accessToken,
+        refreshToken,
       };
     });
 
@@ -61,15 +82,14 @@ export namespace CreateEmployeeUseCase {
       name: string;
       email: string;
       password: string;
+      role: ERole;
     }
 
     storeId: string;
   }
 
   export type Output = {
-    id: string;
-    externalId: string;
-    name: string;
-    email: string;
+   accessToken: string;
+   refreshToken: string;
   };
 }

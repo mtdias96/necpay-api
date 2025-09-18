@@ -36,6 +36,7 @@ functions:
   - ${file(./sls/functions/product.yml)}
   - ${file(./sls/functions/order.yml)}
   - ${file(./sls/functions/report.yml)}
+  - ${file(./sls/functions/employees.yml)}
 resources:
   - ${file(./sls/resources/UserPool.yml)}
   - ${file(./sls/resources/ProductsBucket.yml)}

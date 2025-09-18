@@ -1,4 +1,5 @@
 import { Account } from '@application/entities/Account';
+import { Employees, ERole } from '@application/entities/Employees';
 import { Store } from '@application/entities/Store';
 import { EmailAlreadyInUse } from '@application/errors/application/EmailAlreadyInUse';
 import { NameStoreAlreadyInUse } from '@application/errors/application/NameStoreAlreadyInUse';
@@ -16,7 +17,7 @@ export class SignUpUseCase {
     private readonly authGateway: AuthGateway,
     private readonly accountRepository: AccountRepository,
     private readonly storeRepository: StoreRepository,
-    private readonly signnUpUnitOfWork: SignUpUnitOfWork,
+    private readonly signUpUnitOfWork: SignUpUnitOfWork,
     private readonly saga: Saga,
 
   ) { }
@@ -48,6 +49,13 @@ export class SignUpUseCase {
         accountId: account.id,
       });
 
+    const employee = new Employees({
+      accountId: account.id,
+      storeId: store.id,
+      externalId: account.externalId,
+      role: ERole.ADMIN,
+    });
+
       const { externalId } = await this.authGateway.signUp({
         email,
         password,
@@ -58,10 +66,12 @@ export class SignUpUseCase {
       this.saga.addCompensation(() => this.authGateway.deleteUser({ externalId }));
 
       account.externalId = externalId;
+      employee.externalId = externalId;
 
-      await this.signnUpUnitOfWork.run({
+      await this.signUpUnitOfWork.run({
         account: account,
         store: store,
+        employee,
       });
 
       const {

@@ -14,13 +14,12 @@ export const storesTable = pgTable('stores', {
 });
 
 export const storeRole = pgEnum('role', [
-  'OWNER',
   'ADMIN',
   'MEMBER',
   'READONLY',
 ]);
 
-export const storeEmployee = pgTable('store_employees', {
+export const storeEmployees = pgTable('store_employees', {
   accountId: uuid('account_id').references(() => accountsTable.id).notNull(),
   storeId: uuid('store_id').references(() => storesTable.id).notNull(),
   role: storeRole('role').notNull(),
